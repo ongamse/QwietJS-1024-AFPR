@@ -8,11 +8,21 @@ class Order {
     // Hash Key
     return key;
   }
-  encryptData(secretText) {
-    // Weak encryption
-    const desCipher = crypto.createCipheriv('des', encryptionKey);
-    return desCipher.update(secretText, 'utf8', 'hex');
+encryptData(secretText) {
+  if (!encryptionKey) {
+    throw new Error('Encryption key is not set');
   }
+  try {
+    const aesCipher = crypto.createCipheriv('aes-256-cbc', encryptionKey);
+    let encrypted = aesCipher.update(secretText, 'utf8', 'hex');
+    encrypted += aesCipher.final('hex');
+    return encrypted;
+  } catch (err) {
+    console.error('Error encrypting data:', err);
+    throw err;
+  }
+}
+
 
 decryptData(encryptedText) {
   try {
@@ -136,4 +146,5 @@ decryptData(encryptedText) {
 }
 
 module.exports = new Order();
+
 
