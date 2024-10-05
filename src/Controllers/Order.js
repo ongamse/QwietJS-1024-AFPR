@@ -29,16 +29,36 @@ decryptData(encryptedText) {
     // Generate a secure IV
     const iv = crypto.randomBytes(16);
 
+    // Retrieve the encryption key from an environment variable
+    const encryptionKey = Buffer.from(process.env.ENCRYPTION_KEY || '', 'hex');
+
+    // Ensure the encryption key is valid
+    if (!encryptionKey || encryptionKey.length !== 32) {
+      throw new Error('Invalid encryption key');
+    }
+
     // Create a decipher object with the correct algorithm, key, and IV
-    const desCipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(process.env.ENCRYPTION_KEY, 'hex'), iv);
+    const desCipher = crypto.createDecipheriv('aes-256-cbc', encryptionKey, iv);
 
     // Decrypt the data
-    let decrypted = desCipher.update(Buffer.from(encryptedText, 'base64'));
-    decrypted = Buffer.concat([decrypted, desCipher.final()]);
+    let decrypted;
+    try {
+      decrypted = desCipher.update(Buffer.from(encryptedText, 'base64'));
+      decrypted = Buffer.concat([decrypted, desCipher.final()]);
+    } catch (err) {
+      console.error('Error decrypting data:', err);
+      throw err;
+    }
 
     // Return the decrypted data
-    return decrypted.toString();
+    return decrypted ? decrypted.toString() : null;
   } catch (err) {
+    // Handle errors
+    console.error('An error occurred while decrypting data:', err);
+    throw err;
+  }
+}
+
     // Handle errors
     console.error(err);
     throw err;
@@ -146,5 +166,6 @@ decryptData(encryptedText) {
 }
 
 module.exports = new Order();
+
 
 
