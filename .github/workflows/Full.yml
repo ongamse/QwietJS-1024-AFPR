@@ -36,7 +36,7 @@ jobs:
       run: |
          ${GITHUB_WORKSPACE}/sl --version
          QWIET_EXTERNAL_SECRETS=true ${GITHUB_WORKSPACE}/sl analyze --strict --wait \
-          --app QwietAI-javascript-GH \
+          --app QwietAI-jspraf_1024 \
           --tag branch=${{ github.head_ref }} \
           --container 18fgsa/s3-resource .
       env:
