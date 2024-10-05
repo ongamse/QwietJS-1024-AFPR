@@ -11,7 +11,7 @@ on:
     - cron: '0 11 * * 6'
 
 jobs:
-  NextGen-Static-Analysis Post Build:
+  NextGen-Static-AnalysisPostBuild:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -22,27 +22,27 @@ jobs:
         java-version: 8
 
     - name: Setup Node.js
-        id: setup-node
-        uses: actions/setup-node@v4
-        with:
+      id: setup-node
+      uses: actions/setup-node@v4
+      with:
           node-version-file: .node-version
           cache: npm
 
-      - name: Install Dependencies
-        id: npm-ci
-        run: npm ci
+    - name: Install Dependencies
+      id: npm-ci
+      run: npm ci
 
-      - name: Check Format
-        id: npm-format-check
-        run: npm run format:check
+    - name: Check Format
+      id: npm-format-check
+      run: npm run format:check
 
-      - name: Lint
-        id: npm-lint
-        run: npm run lint
+    - name: Lint
+      id: npm-lint
+      run: npm run lint
 
-      - name: Test
-        id: npm-ci-test
-        run: npm run ci-test
+    - name: Test
+      id: npm-ci-test
+      run: npm run ci-test
 
   test-action:
     name: GitHub Actions Test
@@ -62,19 +62,19 @@ jobs:
       - name: Print Output
         id: output
         run: echo "${{ steps.test-action.outputs.time }}"
-    - name: Download ShiftLeft CLI
-      run: |
-        curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
+      - name: Download ShiftLeft CLI
+        run: |
+         curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
 
-    - name: preZero Static Analysis
-      run: |
-        ${GITHUB_WORKSPACE}/sl --version
-        QWIET_EXTERNAL_SECRETS=true ${GITHUB_WORKSPACE}/sl analyze --strict --wait \
+      - name: preZero Static Analysis
+        run: |
+         ${GITHUB_WORKSPACE}/sl --version
+         QWIET_EXTERNAL_SECRETS=true ${GITHUB_WORKSPACE}/sl analyze --strict --wait \
           --app QwietAI-javascript-GH \
           --tag branch=${{ github.head_ref }} \
           --container 18fgsa/s3-resource .
-      env:
-        SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
-        SHIFTLEFT_API_HOST: www.shiftleft.io
-        SHIFTLEFT_GRPC_TELEMETRY_HOST: telemetry.shiftleft.io:443
-        SHIFTLEFT_GRPC_API_HOST: api.shiftleft.io:443
+        env:
+         SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
+         SHIFTLEFT_API_HOST: www.shiftleft.io
+         SHIFTLEFT_GRPC_TELEMETRY_HOST: telemetry.shiftleft.io:443
+         SHIFTLEFT_GRPC_API_HOST: api.shiftleft.io:443
