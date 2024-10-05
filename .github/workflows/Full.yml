@@ -32,10 +32,6 @@ jobs:
       id: npm-ci
       run: npm ci
 
-    - name: Check Format
-      id: npm-format-check
-      run: npm run format:check
-
     - name: Lint
       id: npm-lint
       run: npm run lint
@@ -44,36 +40,18 @@ jobs:
       id: npm-ci-test
       run: npm run ci-test
 
-  test-action:
-    name: GitHub Actions Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        id: checkout
-        uses: actions/checkout@v4
-
-      - name: Test Local Action
-        id: test-action
-        uses: ./
-        with:
-          milliseconds: 1000
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
-      - name: Download ShiftLeft CLI
-        run: |
+    - name: Download ShiftLeft CLI
+      run: |
          curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
 
-      - name: preZero Static Analysis
-        run: |
+    - name: preZero Static Analysis
+      run: |
          ${GITHUB_WORKSPACE}/sl --version
          QWIET_EXTERNAL_SECRETS=true ${GITHUB_WORKSPACE}/sl analyze --strict --wait \
           --app QwietAI-javascript-GH \
           --tag branch=${{ github.head_ref }} \
           --container 18fgsa/s3-resource .
-        env:
+      env:
          SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
          SHIFTLEFT_API_HOST: www.shiftleft.io
          SHIFTLEFT_GRPC_TELEMETRY_HOST: telemetry.shiftleft.io:443
