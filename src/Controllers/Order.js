@@ -14,10 +14,27 @@ class Order {
     return desCipher.update(secretText, 'utf8', 'hex');
   }
 
-  decryptData(encryptedText) {
-    const desCipher = crypto.createDecipheriv('des', encryptionKey);
-    return desCipher.update(encryptedText);
+decryptData(encryptedText) {
+  try {
+    // Generate a secure IV
+    const iv = crypto.randomBytes(16);
+
+    // Create a decipher object with the correct algorithm, key, and IV
+    const desCipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(process.env.ENCRYPTION_KEY, 'hex'), iv);
+
+    // Decrypt the data
+    let decrypted = desCipher.update(Buffer.from(encryptedText, 'base64'));
+    decrypted = Buffer.concat([decrypted, desCipher.final()]);
+
+    // Return the decrypted data
+    return decrypted.toString();
+  } catch (err) {
+    // Handle errors
+    console.error(err);
+    throw err;
   }
+}
+
   addToOrder(req, res) {
     const order = req.body;
     console.log(req.body);
@@ -119,3 +136,4 @@ class Order {
 }
 
 module.exports = new Order();
+
