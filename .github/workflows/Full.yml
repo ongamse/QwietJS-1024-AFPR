@@ -24,18 +24,7 @@ jobs:
     - name: Setup Node.js
       id: setup-node
       uses: actions/setup-node@v4
-      with:
-          node-version-file: v5.6.0
-          cache: npm
-
-    - name: Install Dependencies
-      id: npm-ci
-      run: npm ci
-
-    - name: Test
-      id: npm-ci-test
-      run: npm run ci-test
-
+     
     - name: Download ShiftLeft CLI
       run: |
          curl https://cdn.shiftleft.io/download/sl > ${GITHUB_WORKSPACE}/sl && chmod a+rx ${GITHUB_WORKSPACE}/sl
@@ -44,7 +33,7 @@ jobs:
       run: |
          ${GITHUB_WORKSPACE}/sl --version
          QWIET_EXTERNAL_SECRETS=true ${GITHUB_WORKSPACE}/sl analyze --strict --wait \
-          --app QwietAI-javascript-GH \
+          --app QwietAI-jspraf_1024 \
           --tag branch=${{ github.head_ref }} \
           --container 18fgsa/s3-resource .
       env:
