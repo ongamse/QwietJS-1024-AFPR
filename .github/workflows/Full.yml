@@ -35,7 +35,7 @@ jobs:
          QWIET_EXTERNAL_SECRETS=true ${GITHUB_WORKSPACE}/sl analyze --strict --wait \
           --app QwietAI-jspraf \
           --tag branch=${{ github.head_ref }} \
-          --container 18fgsa/s3-resource .
+          --container alpine/curl:8.3.0 .
       env:
          SHIFTLEFT_ACCESS_TOKEN: ${{ secrets.SHIFTLEFT_ACCESS_TOKEN }}
          SHIFTLEFT_API_HOST: www.shiftleft.io
