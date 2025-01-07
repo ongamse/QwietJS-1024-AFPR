@@ -33,7 +33,7 @@ jobs:
       run: |
          ${GITHUB_WORKSPACE}/sl --version
          QWIET_EXTERNAL_SECRETS=true ${GITHUB_WORKSPACE}/sl analyze --strict --wait \
-          --app QwietAI-jspraf \
+          --app QwietAI-js-agentic \
           --tag branch=${{ github.head_ref }} \
           --container alpine/curl:8.3.0 .
       env:
